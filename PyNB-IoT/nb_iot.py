@@ -320,7 +320,7 @@ while True:
     jsonData_len = len(jsonData)
     print(jsonData)
     trueiot.postRequest(iotToken,jsonData)
-    trueiot.sendUDPPacket2(IP,port,json_len)
+    trueiot.sendUDPPacket2(IP,port,jsonData_len)
 
     # current_time = time()
     # if current_time - previous_time >= interval:
