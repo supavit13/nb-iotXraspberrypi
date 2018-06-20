@@ -9,19 +9,19 @@ class NB_TRUE:
         self.ver = 1
         self.type = 0
         self.ver_type_tokenlen = 0
-        self.code = []
-        self.messageid = []
-        self.token = []
-        self.option_1_name_path = []
-        self.option_2_length = []
-        self.option_2_ver = []
-        self.option_3_dev_token_len = []
-        self.option_3_dev_token_ext_len = []
-        self.option_3_dev_token = []
-        self.option_4_len_telemetry_word = []
-        self.option_4_telemetry_word = []
-        self.option_4_endmask = []
-        self.buffer = []
+        self.code = [None] * 2
+        self.messageid = [None] * 4
+        self.token = [None] * 8
+        self.option_1_name_path = [None] * 8
+        self.option_2_length = [None] * 2
+        self.option_2_ver = [None] * 4
+        self.option_3_dev_token_len = [None] * 2
+        self.option_3_dev_token_ext_len = [None] * 2
+        self.option_3_dev_token = [None] * 20
+        self.option_4_len_telemetry_word = [None] * 2
+        self.option_4_telemetry_word = [None] * 18
+        self.option_4_endmask = [None] * 2
+        self.buffer = [None] * 64
 
 
     def setupDevice(self, serverPort):
