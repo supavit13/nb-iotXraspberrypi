@@ -270,7 +270,7 @@ class NB_TRUE:
         self.option_4_endmask[0] = 0x46;
         self.option_4_endmask[1] = 0x46;
 
-        for i in range(0 , payload_len+1):
+        for i in range(0 , payload_len):
             self.buffer[i] = payload[i]
 
 
