@@ -282,7 +282,7 @@ class NB_TRUE:
         #print(buff.encode())
         #print(str(hex(self.ver_type_tokenlen)).encode())
         ser.write( str(hex(self.ver_type_tokenlen)).encode())
-        ser.write( str(self.code).encode)
+        ser.write( self.code)
         ser.write( self.messageid)
         ser.write( self.token)
         ser.write( self.option_1_name_path )
@@ -292,23 +292,25 @@ class NB_TRUE:
         ser.write( self.option_3_dev_token_ext_len)
 
         for i in range(0,20):
-            ser.write(self.option_3_dev_token[i])
+            data = (r'0x{0:x}'.format(ord(self.option_3_dev_token[i])))
+            ser.write(data.encode())
 
         ser.write(self.option_4_len_telemetry_word)
         ser.write(self.option_4_telemetry_word)
         ser.write(self.option_4_endmask)
 
         for i in range(0,json_len):
-            ser.write(self.buffer[i])
+            data = (r'0x{0:x}'.format(ord(self.buffer[i])))
+            ser.write(data.encode())
         
-        ser.write("\r\n")
+        ser.write(b"\r\n")
 
 
 
 IP = '104.196.24.70'
 port = 5683
 iotToken = "mY6nQMft4YJLhG2UYHsL"
-jsonData = "{\"temperature\": 48, \"humidity\": 50 }\0"
+jsonData = "{\"temperature\": 48, \"humidity\": 50 }"
 
 ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 
