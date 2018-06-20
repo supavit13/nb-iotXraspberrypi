@@ -1,4 +1,5 @@
 import serial
+import random
 from time import sleep, time
 
 class NB_TRUE:
