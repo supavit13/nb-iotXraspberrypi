@@ -274,6 +274,7 @@ class NB_TRUE:
             self.buffer[i] = payload[i]
 
     def sendUDPPacket2(self,remoteIP,remotePort,json_len):
+        lens = 96
         lens = (lens + json_len*2)/2
         buff = "0,"+remoteIP+","+str(remotePort)+","+str(lens)
         ser.write(b'AT+NSOST=\r\n')
