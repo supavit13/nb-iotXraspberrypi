@@ -278,16 +278,18 @@ class NB_TRUE:
         lens = (lens + json_len*2)/2
         buff = "0,"+remoteIP+","+str(remotePort)+","+str(lens)
         ser.write(b'AT+NSOST=\r\n')
-        ser.write(buff)
-        ser.write( self.ver_type_tokenlen);
-        ser.write( self.code);
-        ser.write( self.messageid);
-        ser.write( self.token);
-        ser.write( self.option_1_name_path );
-        ser.write( self.option_2_length);
-        ser.write( self.option_2_ver);
-        ser.write( self.option_3_dev_token_len);
-        ser.write( self.option_3_dev_token_ext_len);
+        ser.write(buff.encode())
+        #print(buff.encode())
+        #print(str(hex(self.ver_type_tokenlen)).encode())
+        ser.write( str(hex(self.ver_type_tokenlen)).encode())
+        ser.write( str(self.code).encode)
+        ser.write( self.messageid)
+        ser.write( self.token)
+        ser.write( self.option_1_name_path )
+        ser.write( self.option_2_length)
+        ser.write( self.option_2_ver)
+        ser.write( self.option_3_dev_token_len)
+        ser.write( self.option_3_dev_token_ext_len)
 
         for i in range(0,20):
             ser.write(self.option_3_dev_token[i])
