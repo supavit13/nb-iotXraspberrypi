@@ -22,7 +22,7 @@ class NB_TRUE:
         self.option_4_len_telemetry_word = [None] * 2
         self.option_4_telemetry_word = [None] * 18
         self.option_4_endmask = [None] * 2
-        self.buffer = [None] * 64
+        self.buffer = [None] * 1024
 
 
     def setupDevice(self, serverPort):
