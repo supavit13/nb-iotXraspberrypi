@@ -273,6 +273,33 @@ class NB_TRUE:
         for i in range(0 , payload_len):
             self.buffer[i] = payload[i]
 
+    def sendUDPPacket2(self,remoteIP,remotePort,json_len):
+        lens = (lens + json_len*2)/2
+        buff = "0,"+remoteIP+","+str(remotePort)+","+str(lens)
+        ser.write(b'AT+NSOST=\r\n')
+        ser.write(buff)
+        ser.write( self.ver_type_tokenlen);
+        ser.write( self.code);
+        ser.write( self.messageid);
+        ser.write( self.token);
+        ser.write( self.option_1_name_path );
+        ser.write( self.option_2_length);
+        ser.write( self.option_2_ver);
+        ser.write( self.option_3_dev_token_len);
+        ser.write( self.option_3_dev_token_ext_len);
+
+        for i in range(0,20):
+            ser.write(self.option_3_dev_token[i])
+
+        ser.write(self.option_4_len_telemetry_word)
+        ser.write(self.option_4_telemetry_word)
+        ser.write(self.option_4_endmask)
+
+        for i in range(0,json_len):
+            ser.write(self.buffer[i])
+        
+        ser.write("\r\n")
+
 
 
 IP = '104.196.24.70'
@@ -293,6 +320,7 @@ while True:
     jsonData_len = len(jsonData)
     print(jsonData)
     trueiot.postRequest(iotToken,jsonData)
+    trueiot.sendUDPPacket2(IP,port,json_len)
 
     # current_time = time()
     # if current_time - previous_time >= interval:
