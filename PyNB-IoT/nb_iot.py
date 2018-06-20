@@ -212,7 +212,7 @@ class NB_TRUE:
             if self.debug :
                 print("Respone data From IP:" + serv_ip + " Port:" + serv_port + " Length:" + length + " Data:" + data)
             return data
-    def postRequest(token,payload):
+    def postRequest(self,token,payload):
         token_len = len(token)
         payload_len = len(payload)
         header_token_len = 0x04
@@ -287,11 +287,11 @@ trueiot.setupDevice(port)
 print("Test Ping")
 trueiot.pingIP('8.8.8.8')
 while True:
-    time.sleep(1)
+    sleep(1)
     
     jsonData_len = len(jsonData)
     print(jsonData)
-    trueiot.postRequest(token,jsonData)
+    trueiot.postRequest(iotToken,jsonData)
 
     # current_time = time()
     # if current_time - previous_time >= interval:
