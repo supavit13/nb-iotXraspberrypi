@@ -1,5 +1,5 @@
 import serial
-import urllib.request, jsonData
+import urllib.request, json
 import sys
 from time import sleep, time
 
@@ -202,8 +202,8 @@ class NB_TRUE:
 
 
 
-IP = '158.108.130.137'
-port = 33333
+IP = '158.108.130.130'
+port = 3000
 jsonData = "{\"temperature\": 48, \"humidity\": 50 }"
 
 ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
@@ -225,8 +225,8 @@ while True:
             data = json.loads(url.read().decode())
             for aircraft in data['aircraft']:
                 aircraft['unixtime'] = data['now']
-        
-        trueiot.sendUDPmsg(IP,port,data)
+            trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(data['aircraft']))
+##        trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(data['aircraft']))
         previous_time = current_time
         print("send")
         
