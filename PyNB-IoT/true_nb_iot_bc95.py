@@ -160,8 +160,10 @@ class NB_TRUE:
         length = str(len(data)/2)
         txt = "AT+NSOST=0,"+address+"," + str(port) + "," +length[:-2]+ "," + data + "\r\n"
         ser.write(txt.encode())
+##        print("write to serial")
         msg = ""
         while msg != 'OK':
+##            print("wait OK")
             msg = ser.readline().decode('utf-8').strip()
 
     def response(self):
@@ -202,8 +204,8 @@ class NB_TRUE:
 
 
 
-IP = '158.108.130.130'
-port = 3000
+IP = '159.89.206.210'
+port = 6000
 jsonData = "{\"temperature\": 48, \"humidity\": 50 }"
 
 ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
@@ -223,11 +225,15 @@ while True:
         data = {}
         with urllib.request.urlopen("http://127.0.0.1:8080/data/aircraft.json") as url:
             data = json.loads(url.read().decode())
+            print("read json aircraft..")
             for aircraft in data['aircraft']:
                 aircraft['unixtime'] = data['now']
-            trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(data['aircraft']))
-##        trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(data['aircraft']))
+                if len(aircraft) >= 15:
+                    trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(aircraft))
+                    print("send udp")
         previous_time = current_time
-        print("send")
+        print("send"+str(cnt))
+        if cnt == 11:
+            cnt = 0
         
     trueiot.response()
