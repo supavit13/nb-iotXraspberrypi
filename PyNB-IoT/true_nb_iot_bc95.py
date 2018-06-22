@@ -230,6 +230,7 @@ while True:
             print("read json aircraft..")
             for aircraft in data['aircraft']:
                 aircraft['unixtime'] = data['now']
+                aircraft['node_number'] = int(sys.argv[3])
                 if len(aircraft) >= 15:
                     trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(aircraft))
                     print("send udp")
