@@ -231,7 +231,7 @@ while True:
             for aircraft in data['aircraft']:
                 aircraft['unixtime'] = data['now']
                 aircraft['node_number'] = int(sys.argv[3])
-                if ('flight' and 'lat' and 'lon' and 'altitude') in aircraft:
+                if all(x in aircraft for x in ("lat","lon","flight","altitude")):
                     trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(aircraft))
                     print("send udp")
         previous_time = current_time
