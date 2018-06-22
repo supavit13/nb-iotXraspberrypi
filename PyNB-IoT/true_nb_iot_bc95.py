@@ -204,8 +204,10 @@ class NB_TRUE:
 
 
 
-IP = '159.89.206.210'
-port = 6000
+IP = sys.argv[1]
+port = int(sys.argv[2])
+print(IP)
+print(port)
 jsonData = "{\"temperature\": 48, \"humidity\": 50 }"
 
 ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
