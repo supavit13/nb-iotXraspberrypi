@@ -1,4 +1,4 @@
-# nb-iotXraspberrypi
+# ADS-B Receiver by nb-iotXraspberrypi
 ## requiremant
 - pyserial
 - python3
