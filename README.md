@@ -7,7 +7,7 @@
 
 - add command to run script
 
-@reboot python3 file.py <IP> <PORT> <NODE_NUMBER> &
+@reboot python3 file.py [IP] [PORT] [NODE_NUMBER] &
 
 *set you ip , port and node_number
 
