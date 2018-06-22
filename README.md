@@ -2,6 +2,12 @@
 ## requiremant
 - pyserial
 - python3
+- dump1090-fa by flightaware
+## installation
+- connect R820T2 ADS-B receiver , NB-IoT Shield and power supply to your pi
+- install python3, pyserial and dump1090-fa then reboot your pi
+- setup true_nb_iot_bc95.py on startup following below step
+
 ## run on startup
 - sudo crontab -e
 
