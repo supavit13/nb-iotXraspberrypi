@@ -183,6 +183,7 @@ class NB_TRUE:
             cur_time = time()
             if cur_time - pre_time >= 0.25:
                 pre_time = cur_time
+                self.setupDevice(self.port) #reinitial when time out
                 break
 
         if getData:
@@ -224,16 +225,19 @@ while True:
     current_time = time()
     if current_time - previous_time >= interval:
         cnt += 1
-        data = {}
+        data = {}  
         with urllib.request.urlopen("http://127.0.0.1:8080/data/aircraft.json") as url:
             data = json.loads(url.read().decode())
             print("read json aircraft..")
+            newObject = []
             for aircraft in data['aircraft']:
                 aircraft['unixtime'] = data['now']
                 aircraft['node_number'] = int(sys.argv[3])
                 if all(x in aircraft for x in ("lat","lon","flight","altitude")):
-                    trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(aircraft))
-                    print("send udp")
+                    newObject.append(aircraft)
+            
+            if newObject:
+                trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(newObject))
         previous_time = current_time
         print("send"+str(cnt))
         if cnt == 11:
