@@ -203,7 +203,6 @@ class NB_TRUE:
             return data
 
 
-f = open('debug.txt','w')
 
 IP = sys.argv[1]
 port = int(sys.argv[2])
@@ -235,7 +234,6 @@ while True:
             if all(x in aircraft for x in ("lat","lon","flight","altitude")):
                 trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(aircraft))
                 print("send udp"+str(time()))
-                f.write(str(time()))
     previous_time = current_time
     print("send"+str(cnt))
     if cnt == 11:
