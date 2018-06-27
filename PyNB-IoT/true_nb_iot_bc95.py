@@ -99,7 +99,7 @@ class NB_TRUE:
                 if self.getNBConnect():
                     ret = True
                     break
-                print('.', end='',file=f,file=self.f)
+                print('.', end='',file=self.f)
                 i += 1
         else :
             return True
