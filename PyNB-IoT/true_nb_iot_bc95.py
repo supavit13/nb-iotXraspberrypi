@@ -225,20 +225,20 @@ cnt = 0
 while True:
     current_time = time()
     # if current_time - previous_time >= interval:
-        cnt += 1
-        data = {}
-        with urllib.request.urlopen("http://127.0.0.1:8080/data/aircraft.json") as url:
-            data = json.loads(url.read().decode())
-            logging.info("read json aircraft..")
-            for aircraft in data['aircraft']:
-                aircraft['unixtime'] = data['now']
-                aircraft['node_number'] = int(sys.argv[3])
-                if all(x in aircraft for x in ("lat","lon","flight","altitude")):
-                    trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(aircraft))
-                    logging.info("send udp")
-        previous_time = current_time
-        logging.info("send"+str(cnt))
-        if cnt == 11:
-            cnt = 0
+    cnt += 1
+    data = {}
+    with urllib.request.urlopen("http://127.0.0.1:8080/data/aircraft.json") as url:
+        data = json.loads(url.read().decode())
+        logging.info("read json aircraft..")
+        for aircraft in data['aircraft']:
+            aircraft['unixtime'] = data['now']
+            aircraft['node_number'] = int(sys.argv[3])
+            if all(x in aircraft for x in ("lat","lon","flight","altitude")):
+                trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(aircraft))
+                logging.info("send udp")
+    previous_time = current_time
+    logging.info("send"+str(cnt))
+    if cnt == 11:
+        cnt = 0
         
     # trueiot.response()
