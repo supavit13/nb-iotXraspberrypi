@@ -8,48 +8,47 @@ class NB_TRUE:
         self.debug = debug
         self.previous_time = time()
         self.port = ""
-        self.f = open('debug.log','w')
         
 
 
     def setupDevice(self, serverPort):
         self.port = serverPort
-        print("############ NB-IOT TRUE #############",file=self.f)
+        print("############ NB-IOT TRUE #############")
         self.reset()
         if self.debug :
             self.IMEI = self.getIMEI()
-            print("IMEI : " + self.IMEI,file=self.f)
+            print("IMEI : " + self.IMEI)
             self.firmwareVersion = self.getFirmwareVersion()
-            print("Firmware Version : " + self.firmwareVersion,file=self.f)
+            print("Firmware Version : " + self.firmwareVersion)
             self.IMSI = self.getIMSI()
             print("IMSI SIM : " + self.IMSI)
         self.attachNB(serverPort)
-        print("end",file=self.f)
+        print("end")
 
     
     def reset(self):
         self.rebootModule()
-        print("Set Phone Function",file=self.f)
+        print("Set Phone Function")
         self.setPhoneFunction()
-        print("Set Phone Function Complete",file=self.f)
+        print("Set Phone Function Complete")
 
     def rebootModule(self):
         print("Test AT")
         ser.write(b'AT\r\n')
         while(self.waitReady() != True):
-            print('.',end='',file=self.f)
+            print('.',end='')
             sleep(0.2)
-        print("OK",file=self.f)
+        print("OK")
         
         #reboot module
-        print("Reboot Module",file=self.f)
+        print("Reboot Module")
         ser.write(b"AT+NRB\r\n")
         while(self.waitReady() != True):
             ser.write(b'AT\r\n')
-            print(".", end='',file=self.f)
+            print(".", end='')
             sleep(.5)
         ser.flush()
-        print("Reboot Module Complete",file=self.f)
+        print("Reboot Module Complete")
         sleep(5)
 
     def waitReady(self):
@@ -62,7 +61,7 @@ class NB_TRUE:
     def setPhoneFunction(self):
         ser.write(b'AT+CFUN=1\r\n')
         while self.waitReady() != True:
-            print(".", end='',file=self.f)
+            print(".", end='')
             sleep(.2)
 
     def getIMEI(self):
@@ -89,7 +88,7 @@ class NB_TRUE:
     def attachNB(self, serverPort):
         ret = False
         if not self.getNBConnect():
-            print("Connecting NB IOT Network",file=self.f)
+            print("Connecting NB IOT Network")
             i = 1
             while i < 60:
                 self.setPhoneFunction()
@@ -99,16 +98,16 @@ class NB_TRUE:
                 if self.getNBConnect():
                     ret = True
                     break
-                print('.', end='',file=self.f)
+                print('.', end='')
                 i += 1
         else :
             return True
         if ret :
-            print("> Connected",file=self.f)
+            print("> Connected")
             self.createUDPSocket(serverPort)
         else :
-            print("> Disconnect",file=self.f)
-        print("##################################",file=self.f)
+            print("> Disconnect")
+        print("##################################")
         return ret
 
     
@@ -154,7 +153,7 @@ class NB_TRUE:
         index2 = msg.find(',', index1+1)
         ttl = msg[index1+1:index2]
         rtt = msg[index2+1:len(msg)]
-        print("Ping To IP: " + IP + " ttl = " +ttl + " rtt = " + rtt,file=self.f)
+        print("Ping To IP: " + IP + " ttl = " +ttl + " rtt = " + rtt)
 
     def sendUDPmsg(self, address, port, data):
         data = data.encode('utf-8').hex()
@@ -200,25 +199,24 @@ class NB_TRUE:
             
 
             if self.debug :
-                print("Respone data From IP:" + serv_ip + " Port:" + serv_port + " Length:" + length + " Data:" + data,file=self.f)
+                print("Respone data From IP:" + serv_ip + " Port:" + serv_port + " Length:" + length + " Data:" + data)
             return data
 
 
+f = open('debug.txt','w')
 
-f = open('debug.log','w')
 IP = sys.argv[1]
 port = int(sys.argv[2])
-print(IP,file=f)
-print(port,file=f)
+print(IP)
+print(port)
 jsonData = "{\"temperature\": 48, \"humidity\": 50 }"
-
 
 ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 
 # debug True or False
 trueiot = NB_TRUE(True)
 trueiot.setupDevice(port)
-print("Test Ping",file=f)
+print("Test Ping")
 trueiot.pingIP('8.8.8.8')
 previous_time = time()
 interval = 1
@@ -230,15 +228,16 @@ while True:
     data = {}
     with urllib.request.urlopen("http://127.0.0.1:8080/data/aircraft.json") as url:
         data = json.loads(url.read().decode())
-        print("read json aircraft..",file=f)
+        print("read json aircraft..")
         for aircraft in data['aircraft']:
             aircraft['unixtime'] = data['now']
             aircraft['node_number'] = int(sys.argv[3])
             if all(x in aircraft for x in ("lat","lon","flight","altitude")):
                 trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(aircraft))
-                print("send udp"+str(time()),file=f)
+                print("send udp"+str(time()))
+                f.write(str(time()))
     previous_time = current_time
-    print("send"+str(cnt),file=f)
+    print("send"+str(cnt))
     if cnt == 11:
         cnt = 0
         
