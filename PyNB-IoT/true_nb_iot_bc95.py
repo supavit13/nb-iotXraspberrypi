@@ -162,9 +162,9 @@ class NB_TRUE:
         ser.write(txt.encode())
 ##        print("write to serial")
         msg = ""
-        #while msg != 'OK':
+        while msg != 'OK':
 ##            print("wait OK")
-            #msg = ser.readline().decode('utf-8').strip()
+            msg = ser.readline().decode('utf-8').strip()
 
     def response(self):
         pre_time = time()
