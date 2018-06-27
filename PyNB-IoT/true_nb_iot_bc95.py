@@ -14,42 +14,42 @@ class NB_TRUE:
 
     def setupDevice(self, serverPort):
         self.port = serverPort
-        logging.info("############ NB-IOT TRUE #############")
+        print("############ NB-IOT TRUE #############")
         self.reset()
         if self.debug :
             self.IMEI = self.getIMEI()
-            logging.info("IMEI : " + self.IMEI)
+            print("IMEI : " + self.IMEI)
             self.firmwareVersion = self.getFirmwareVersion()
-            logging.info("Firmware Version : " + self.firmwareVersion)
+            print("Firmware Version : " + self.firmwareVersion)
             self.IMSI = self.getIMSI()
-            logging.info("IMSI SIM : " + self.IMSI)
+            print("IMSI SIM : " + self.IMSI)
         self.attachNB(serverPort)
-        logging.info("end")
+        print("end")
 
     
     def reset(self):
         self.rebootModule()
-        logging.info("Set Phone Function")
+        print("Set Phone Function")
         self.setPhoneFunction()
-        logging.info("Set Phone Function Complete")
+        print("Set Phone Function Complete")
 
     def rebootModule(self):
-        logging.info("Test AT")
+        print("Test AT")
         ser.write(b'AT\r\n')
         while(self.waitReady() != True):
-            logging.info('.',end='')
+            print('.',end='')
             sleep(0.2)
-        logging.info("OK")
+        print("OK")
         
         #reboot module
-        logging.info("Reboot Module")
+        print("Reboot Module")
         ser.write(b"AT+NRB\r\n")
         while(self.waitReady() != True):
             ser.write(b'AT\r\n')
-            logging.info(".", end='')
+            print(".", end='')
             sleep(.5)
         ser.flush()
-        logging.info("Reboot Module Complete")
+        print("Reboot Module Complete")
         sleep(5)
 
     def waitReady(self):
@@ -62,7 +62,7 @@ class NB_TRUE:
     def setPhoneFunction(self):
         ser.write(b'AT+CFUN=1\r\n')
         while self.waitReady() != True:
-            logging.info(".", end='')
+            print(".", end='')
             sleep(.2)
 
     def getIMEI(self):
@@ -104,11 +104,11 @@ class NB_TRUE:
         else :
             return True
         if ret :
-            logging.info("> Connected")
+            print("> Connected")
             self.createUDPSocket(serverPort)
         else :
-            logging.info("> Disconnect")
-        logging.info("##################################")
+            print("> Disconnect")
+        print("##################################")
         return ret
 
     
@@ -154,7 +154,7 @@ class NB_TRUE:
         index2 = msg.find(',', index1+1)
         ttl = msg[index1+1:index2]
         rtt = msg[index2+1:len(msg)]
-        logging.info("Ping To IP: " + IP + " ttl = " +ttl + " rtt = " + rtt)
+        print("Ping To IP: " + IP + " ttl = " +ttl + " rtt = " + rtt)
 
     def sendUDPmsg(self, address, port, data):
         data = data.encode('utf-8').hex()
@@ -200,24 +200,31 @@ class NB_TRUE:
             
 
             if self.debug :
-                logging.info("Respone data From IP:" + serv_ip + " Port:" + serv_port + " Length:" + length + " Data:" + data)
+                print("Respone data From IP:" + serv_ip + " Port:" + serv_port + " Length:" + length + " Data:" + data)
             return data
 
 
 
 IP = sys.argv[1]
 port = int(sys.argv[2])
-logging.info(IP)
-logging.info(port)
+print(IP)
+print(port)
 jsonData = "{\"temperature\": 48, \"humidity\": 50 }"
-logging.basicConfig(filename='logging.log',level=logging.DEBUG)
+logging.basicConfig(filename='debug.log',level=logging.DEBUG)
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
 
+ch = logging.StreamHandler(sys.stdout)
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+root.addHandler(ch)
 ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 
 # debug True or False
 trueiot = NB_TRUE(True)
 trueiot.setupDevice(port)
-logging.info("Test Ping")
+print("Test Ping")
 trueiot.pingIP('8.8.8.8')
 previous_time = time()
 interval = 1
@@ -229,15 +236,15 @@ while True:
     data = {}
     with urllib.request.urlopen("http://127.0.0.1:8080/data/aircraft.json") as url:
         data = json.loads(url.read().decode())
-        logging.info("read json aircraft..")
+        print("read json aircraft..")
         for aircraft in data['aircraft']:
             aircraft['unixtime'] = data['now']
             aircraft['node_number'] = int(sys.argv[3])
             if all(x in aircraft for x in ("lat","lon","flight","altitude")):
                 trueiot.sendUDPmsg(IP,port,json.JSONEncoder().encode(aircraft))
-                logging.info("send udp")
+                print("send udp")
     previous_time = current_time
-    logging.info("send"+str(cnt))
+    print("send"+str(cnt))
     if cnt == 11:
         cnt = 0
         
