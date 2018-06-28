@@ -3,7 +3,7 @@ import urllib.request, json
 import sys
 import requests
 from time import sleep, time
-API_ENDPOINT = "http://127.0.0.1:3000/api"
+API_ENDPOINT = "http://"+sys.argv[1]+":"+sys.argv[2]+"/putdata"
 while True:
     data = {}
     pre_time = time()
@@ -13,7 +13,7 @@ while True:
         print("read json aircraft..")
         for aircraft in data['aircraft']:
             aircraft['unixtime'] = data['now']
-            aircraft['node_number'] = 1
+            aircraft['node_number'] = sys.argv[3]
             if all(x in aircraft for x in ("lat","lon","flight","altitude")):
                 res = requests.post(url = API_ENDPOINT, data = aircraft)
                 print("status : "+str(res))
