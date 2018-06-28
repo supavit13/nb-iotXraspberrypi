@@ -7,7 +7,7 @@ API_ENDPOINT = "http://"+sys.argv[1]+":"+sys.argv[2]+"/putdata"
 while True:
     data = {}
     pre_time = time()
-    with urllib.request.urlopen("http://192.168.10.3:8080/data/aircraft.json") as url:
+    with urllib.request.urlopen("http://127.0.0.1:8080/data/aircraft.json") as url:
         adsb = []
         data = json.loads(url.read().decode())
         print("read json aircraft..")
