@@ -8,17 +8,27 @@ headers = {'Content-Type': 'application/json', 'Accept':'application/json'}
 while True:
     data = {}
     pre_time = time()
-    with urllib.request.urlopen("http://127.0.0.1:8080/data/aircraft.json") as url:
-        adsb = []
-        data = json.loads(url.read().decode())
-        print("read json aircraft..")
-        for aircraft in data['aircraft']:
-            aircraft['unixtime'] = data['now']
-            aircraft['node_number'] = sys.argv[3]
-            if all(x in aircraft for x in ("lat","lon","flight","altitude")):
-                adsb.append(aircraft)
-        res = requests.post(url = API_ENDPOINT, json = adsb, headers=headers)
-        print("status : "+str(res))
-        print(str(aircraft['unixtime'])+" send "+str(time()))
-    print("1 jps(json per second) file in " + str(time()-pre_time) +" seconds")
+    try:
+        with urllib.request.urlopen("http://127.0.0.1:8080/data/aircraft.json") as url:
+            adsb = []
+            data = json.loads(url.read().decode())
+            print("read json aircraft..")
+            for aircraft in data['aircraft']:
+                aircraft['unixtime'] = data['now']
+                aircraft['node_number'] = sys.argv[3]
+                if all(x in aircraft for x in ("lat","lon","flight","altitude")):
+                    adsb.append(aircraft)
+            
+            res = requests.post(url = API_ENDPOINT, json = adsb, headers=headers)
+            print("status : "+str(res))
+            print(str(aircraft['unixtime'])+" send "+str(time()))
+        print("1 jps(json per second) file in " + str(time()-pre_time) +" seconds")
+    except urllib.error.URLError:
+        print("connection lost, try to connect")
+    except requests.exceptions.ConnectionError:
+        print("can't connect server")
+    except:
+        print("an error occured")
+    else:
+        print("running without error")
     sleep(1)
